@@ -1,17 +1,19 @@
 .contents {
-    border: 2px solid black;
-    padding: 15px;
-   
-    position: fixed;
-    top: 50%;
-    left: 50%;
-   
-   
-    transform: translate(-50%, -50%);
-  }
-   
-   
-  .form-element {
-    margin: 8px;
-    text-align: left;
-  }
+  padding: 8px;
+  border: 2px solid black;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+}
+
+.form-element {
+  margin: 8px;
+  text-align: left;
+}
+
+#notifikasiSisaKarakter {
+  visibility: hidden;
+}
