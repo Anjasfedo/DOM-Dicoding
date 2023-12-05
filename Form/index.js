@@ -49,7 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
   });
 
-  document.getElementById("inputCopy").addEventListener('copy', () => {
-    alert("Anda telah men-copy")
-  })
+  document.getElementById("inputCopy").addEventListener("copy", () => {
+    alert("Anda telah men-copy");
+  });
+
+  document.getElementById("inputPaste").addEventListener("paste", () => {
+    alert("Anda telah men-paste");
+  });
 });
