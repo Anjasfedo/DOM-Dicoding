@@ -18,8 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("inputNama").addEventListener("focus", () => {
-    console.log('inputNama: focus');
     document.getElementById("notifikasiSisaKarakter").style.visibility =
       "visible";
+  });
+
+  document.getElementById("inputNama").addEventListener("blur", () => {
+    document.getElementById("notifikasiSisaKarakter").style.visibility =
+      "hidden";
   });
 });
