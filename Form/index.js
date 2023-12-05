@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
           "Batas Maksimal Karakter Sudah Terpenuhi")
       : restChar <= 5
       ? (document.getElementById("notifikasiSisaKarakter").style.color = "red")
-      : (document.getElementById("notifikasiSisaKarakter").style.color = "black");
+      : (document.getElementById("notifikasiSisaKarakter").style.color =
+          "black");
   });
 
   document.getElementById("inputNama").addEventListener("focus", () => {
@@ -25,5 +26,26 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("inputNama").addEventListener("blur", () => {
     document.getElementById("notifikasiSisaKarakter").style.visibility =
       "hidden";
+  });
+
+  document.getElementById("inputCaptcha").addEventListener("change", () => {
+    const inputCaptcha = document.getElementById("inputCaptcha").value;
+    const submitStatus = document.getElementById("submitButton");
+
+    inputCaptcha === "PRNU"
+      ? submitStatus.removeAttribute("disabled")
+      : submitStatus.setAttribute("disabled", "");
+  });
+
+  document.getElementById("formDataDiri").addEventListener("submit", () => {
+    const inputCaptcha = document.getElementById("inputCaptcha").value;
+
+    if (inputCaptcha === "PRNU") {
+      alert("Selamat anda lolos Captcha");
+    } else {
+      alert("Captcha anda balum tepat");
+      document.getElementById("submitButton").setAttribute("disabled", "");
+    }
+    event.preventDefault();
   });
 });
