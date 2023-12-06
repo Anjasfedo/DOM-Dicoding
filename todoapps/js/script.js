@@ -59,8 +59,8 @@ const makeToDo = (toDoObject) => {
   return container;
 };
 
-const addTaskToCompleted = (id) => {
-  const toDoTarget = findToDo(id);
+const addTaskToCompleted = (toDoId) => {
+  const toDoTarget = findToDo(toDoId);
 
   if (toDoTarget == null) return;
 
@@ -68,14 +68,41 @@ const addTaskToCompleted = (id) => {
   document.dispatchEvent(new Event(RENDER_EVENT));
 };
 
-const findToDo = (id) => {
-  for (const data of todos) {
-    if (data.id === id) {
-      return id;
+const removeTaskFromComplete = (toDoId) => {
+  const toDoTarget = findIndexToDo(toDoId);
+
+  if (toDoTarget === -1) return;
+
+  todos.splice(toDoTarget, 1);
+  document.dispatchEvent(new Event(RENDER_EVENT));
+};
+
+const undoTaskFromComplete = (toDoId) => {
+  const toDoTarget = findToDo(toDoId);
+
+  if (toDoTarget == null) return;
+
+  toDoTarget.isCompleted = false;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+};
+
+const findToDo = (todoId) => {
+  for (const todoItem of todos) {
+    if (todoItem.id === todoId) {
+      return todoItem;
     }
   }
   return null;
 };
+
+const findIndexToDo = (todoId) => {
+    for (const index in todos) {
+      if (todos[index].id === todoId) {
+        return index;
+      }
+    }
+    return -1;
+  };
 
 document.addEventListener("DOMContentLoaded", () => {
   const submitForm = document.getElementById("form");
@@ -107,10 +134,15 @@ document.addEventListener(RENDER_EVENT, function () {
   const uncompletedToDo = document.getElementById("todos");
   uncompletedToDo.innerHTML = "";
 
+  const completedToDo = document.getElementById("completed-todos");
+  completedToDo.innerHTML = "";
+
   for (const data of todos) {
     const toDoElement = makeToDo(data);
     if (!data.isCompleted) {
-        uncompletedToDo.append(toDoElement);
+      uncompletedToDo.append(toDoElement);
+    } else {
+      completedToDo.append(toDoElement);
     }
   }
 });
