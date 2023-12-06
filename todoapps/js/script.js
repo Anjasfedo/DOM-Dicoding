@@ -13,6 +13,70 @@ const generateToDoObject = (id, task, timestamp, isCompleted) => {
   };
 };
 
+const makeToDo = (toDoObject) => {
+  const textTitle = document.createElement("h2");
+  textTitle.innerText = toDoObject.task;
+
+  const textTimeStamp = document.createElement("p");
+  textTimeStamp.innerText = toDoObject.timestamp;
+
+  const textContainer = document.createElement("div");
+  textContainer.classList.add("inner");
+  textContainer.append(textTitle, textTimeStamp);
+
+  const container = document.createElement("div");
+  container.classList.add("item", "shadow");
+  container.append(textContainer);
+  container.setAttribute("id", `todo-${toDoObject.id}`);
+
+  if (toDoObject.isCompleted) {
+    const undoButton = document.createElement("button");
+    undoButton.classList.add("undo-button");
+
+    undoButton.addEventListener("click", () => {
+      undoTaskFromComplete(toDoObject.id);
+    });
+
+    const trashButton = document.createElement("button");
+    trashButton.classList.add("trash-button");
+
+    trashButton.addEventListener("click", () => {
+      removeTaskFromComplete(toDoObject.id);
+    });
+
+    container.append(undoButton, trashButton);
+  } else {
+    const checkButton = document.createElement("button");
+    checkButton.classList.add("check-button");
+
+    checkButton.addEventListener("click", () => {
+      addTaskToCompleted(toDoObject.id);
+    });
+
+    container.append(checkButton);
+  }
+
+  return container;
+};
+
+const addTaskToCompleted = (id) => {
+  const toDoTarget = findToDo(id);
+
+  if (toDoTarget == null) return;
+
+  toDoTarget.isCompleted = true;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+};
+
+const findToDo = (id) => {
+  for (const data of todos) {
+    if (data.id === id) {
+      return id;
+    }
+  }
+  return null;
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const submitForm = document.getElementById("form");
   submitForm.addEventListener("submit", (event) => {
@@ -26,7 +90,7 @@ const addToDo = () => {
   const timeStamp = document.getElementById("date").value;
 
   const generetedID = generetedId();
-  
+
   const toDoObject = generateToDoObject(
     generetedID,
     textToDo,
@@ -39,5 +103,14 @@ const addToDo = () => {
 };
 
 document.addEventListener(RENDER_EVENT, function () {
-  console.log(todos);
+  //   console.log(todos);
+  const uncompletedToDo = document.getElementById("todos");
+  uncompletedToDo.innerHTML = "";
+
+  for (const data of todos) {
+    const toDoElement = makeToDo(data);
+    if (!data.isCompleted) {
+        uncompletedToDo.append(toDoElement);
+    }
+  }
 });
