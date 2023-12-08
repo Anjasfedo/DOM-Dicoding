@@ -66,6 +66,7 @@ const addTaskToCompleted = (toDoId) => {
 
   toDoTarget.isCompleted = true;
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const removeTaskFromComplete = (toDoId) => {
@@ -75,6 +76,7 @@ const removeTaskFromComplete = (toDoId) => {
 
   todos.splice(toDoTarget, 1);
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const undoTaskFromComplete = (toDoId) => {
@@ -84,6 +86,7 @@ const undoTaskFromComplete = (toDoId) => {
 
   toDoTarget.isCompleted = false;
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 const findToDo = (todoId) => {
@@ -96,13 +99,13 @@ const findToDo = (todoId) => {
 };
 
 const findIndexToDo = (todoId) => {
-    for (const index in todos) {
-      if (todos[index].id === todoId) {
-        return index;
-      }
+  for (const index in todos) {
+    if (todos[index].id === todoId) {
+      return index;
     }
-    return -1;
-  };
+  }
+  return -1;
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const submitForm = document.getElementById("form");
@@ -110,6 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     addToDo();
   });
+
+  if (isStorageExist()) {
+    loadDataFromStorage();
+  }
 });
 
 const addToDo = () => {
@@ -127,6 +134,7 @@ const addToDo = () => {
   todos.push(toDoObject);
 
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 };
 
 document.addEventListener(RENDER_EVENT, function () {
@@ -146,3 +154,39 @@ document.addEventListener(RENDER_EVENT, function () {
     }
   }
 });
+
+const SAVED_EVENT = "saved-todo";
+const STORAGE_KEY = "TODO_APPS";
+
+function isStorageExist() /* boolean */ {
+  if (typeof Storage === undefined) {
+    alert("Browser kamu tidak mendukung local storage");
+    return false;
+  }
+  return true;
+}
+
+function saveData() {
+  if (isStorageExist()) {
+    const parsed = JSON.stringify(todos);
+    localStorage.setItem(STORAGE_KEY, parsed);
+    document.dispatchEvent(new Event(SAVED_EVENT));
+  }
+}
+
+document.addEventListener(SAVED_EVENT, function () {
+  console.log(localStorage.getItem(STORAGE_KEY));
+});
+
+function loadDataFromStorage() {
+  const serializedData = localStorage.getItem(STORAGE_KEY);
+  let data = JSON.parse(serializedData);
+
+  if (data !== null) {
+    for (const todo of data) {
+      todos.push(todo);
+    }
+  }
+
+  document.dispatchEvent(new Event(RENDER_EVENT));
+}
